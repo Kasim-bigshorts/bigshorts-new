@@ -1,0 +1,78 @@
+✅ Next.js App Router Best Practices Checklist
+
+1. When to Use "use client"
+
+- Use "use client" only when necessary:
+- Components that use React hooks like useState, useEffect, useRef.
+- Components that rely on browser APIs (e.g., window, document).
+- Components that handle user interactions (click events, form handling).
+- Avoid using "use client" at the root level of a layout or page unless required.
+- Prefer server components by default for better performance and reduced bundle size.
+
+
+2. When to Use Server-Side Rendering (SSR)
+
+- Use SSR (fetch inside Server Component) when:
+ - Data must be fresh on every request (e.g., user dashboard).
+ - Data is personalized (e.g., user profile page).
+
+-Use Static Rendering (SSG) when:
+ - Data is public and rarely changes (e.g., blog posts, marketing pages).
+
+-Use Incremental Static Regeneration (ISR) when:
+ - Data changes periodically but not on every request.
+
+- Avoid SSR for pages with static data → Use SSG or ISR instead for speed.
+
+
+3. Avoiding Unnecessary Re-rendering
+
+- Lift state up only when needed → Don’t keep state at a higher component if it’s only used locally.
+- Use React.memo or useMemo for expensive computations and pure components.
+- Avoid inline functions/objects in props → Use useCallback and useMemo.
+- Do not overuse Context API → It triggers re-renders; prefer props or zustand/Redux for global state.
+- Split large components into smaller ones → So only necessary parts re-render.
+
+
+4. Performance Optimization & Loading Tips
+
+- Use Server Components by default → Smaller client bundle, faster load.
+- Use next/image for images → Optimized loading, automatic lazy loading.
+- Enable next/script for scripts → Use strategy="lazyOnload" or beforeInteractive wisely.
+- Use React Suspense + Streaming → For progressive rendering.
+- Cache data fetches with fetch caching options:
+- cache: 'force-cache' → Static data.
+- cache: 'no-store' → Dynamic data.
+- Avoid fetching the same data twice → Use React cache() or Server Actions.
+
+
+6. Lazy load components with dynamic():
+
+import dynamic from 'next/dynamic';
+const HeavyComponent = dynamic(() => import('./HeavyComponent'), { ssr: false });
+
+- Use prefetch in Link for faster navigation.
+
+
+5. Common Mistakes to Avoid
+
+❌ Don’t use "use client" everywhere.
+❌ Don’t do data fetching inside Client Components unless absolutely needed.
+❌ Don’t keep unnecessary states in global context.
+❌ Don’t block rendering with slow API calls → Use Suspense or loading states.
+❌ Don’t ignore generateStaticParams for dynamic SSG pages.
+
+
+6. Bonus – Developer Mindset
+
+- Think Server-first → Client Components only when interaction is needed.
+- Minimize JavaScript shipped to the client → The less JS, the faster the page.
+
+
+
+✅ Keep this checklist handy for every project. It ensures:
+
+Faster load times
+Better SEO
+Reduced bundle size
+Cleaner code architecture
